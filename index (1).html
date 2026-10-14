@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04110c">
+<title>FREEDOM AI</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Drawer -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="brand">Freedom</span>
+      <button class="icon-btn" data-action="close-drawer" aria-label="Close menu">✕</button>
+    </div>
+    <button class="primary wide" data-nav="chat" data-action="new-chat">New conversation</button>
+    <nav class="menu">
+      <a href="#chat">Chat</a>
+      <a href="#history">Conversations</a>
+      <a href="#memory">Memory</a>
+      <a href="#search">Web search</a>
+      <a href="#models">Model</a>
+      <a href="#personality">Personality</a>
+      <a href="#voice">Voice</a>
+      <a href="#settings">Settings</a>
+      <a href="#privacy">Privacy and data</a>
+    </nav>
+    <p class="drawer-foot" id="drawer-status">Checking server…</p>
+  </aside>
+
+  <!-- Welcome -->
+  <section class="view welcome" data-view="welcome">
+    <div class="orb-wrap"><div class="orb" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    <h1>Freedom AI</h1>
+    <p class="lede">A private assistant for questions, code, and ideas. It talks, remembers what you allow, and tells you when it can't do something.</p>
+    <button class="primary wide" data-action="start">Start talking</button>
+    <p class="fine">Nothing is saved until you choose to save it.</p>
+  </section>
+
+  <!-- Chat -->
+  <section class="view" data-view="chat">
+    <header class="bar">
+      <button class="icon-btn" data-action="open-drawer" aria-label="Open menu">☰</button>
+      <div class="bar-title">
+        <strong id="convo-title">New conversation</strong>
+        <span class="status" id="status"><b class="dot"></b><span id="status-text">Checking…</span></span>
+      </div>
+      <button class="icon-btn" data-action="toggle-coding" id="coding-toggle" aria-pressed="false" title="Coding mode">&lt;/&gt;</button>
+    </header>
+
+    <div class="stage" id="stage">
+      <div class="hero" id="hero">
+        <div class="orb-wrap"><div class="orb" id="orb" aria-hidden="true"><i></i><i></i><i></i></div></div>
+        <p class="hero-line" id="hero-line">What are we working on?</p>
+        <p class="model-line">Model: <span id="model-name">not configured</span></p>
+      </div>
+      <div class="messages" id="messages" aria-live="polite"></div>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <button type="button" class="icon-btn round" data-action="mic" aria-label="Voice input">🎙</button>
+      <textarea id="input" rows="1" placeholder="Message Freedom" aria-label="Message"></textarea>
+      <button type="button" class="icon-btn round" data-action="regenerate" id="regen-btn" aria-label="Regenerate response" title="Regenerate" hidden>↻</button>
+      <button type="submit" class="send" id="send" aria-label="Send">➤</button>
+    </form>
+  </section>
+
+  <!-- History -->
+  <section class="view" data-view="history">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Conversations</strong><span></span></header>
+    <div class="page">
+      <input class="field" type="search" placeholder="Search conversations" aria-label="Search conversations" disabled>
+      <div class="empty"><h2>No conversations yet</h2><p>Saved conversations will appear here with rename, delete, and search. This arrives in Stage 3, when the database is added.</p></div>
+    </div>
+  </section>
+
+  <!-- Memory -->
+  <section class="view" data-view="memory">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Memory</strong><span></span></header>
+    <div class="page">
+      <label class="row"><span>Allow memory<small>Off by default until Stage 3 is built.</small></span><input type="checkbox" disabled></label>
+      <div class="empty"><h2>Nothing remembered</h2><p>Memories you approve will be listed here. You will be able to edit or delete each one, or clear everything. Arrives in Stage 3.</p></div>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <section class="view" data-view="search">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Web search</strong><span></span></header>
+    <div class="page">
+      <label class="row"><span>Search the web when needed<small>Requires a search provider key. Arrives in Stage 5.</small></span><input type="checkbox" disabled></label>
+      <div class="empty"><h2>Live search is not set up</h2><p>Until a search provider is configured on the server, Freedom can't look things up online and will say so instead of guessing.</p></div>
+    </div>
+  </section>
+
+  <!-- Models -->
+  <section class="view" data-view="models">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Model</strong><span></span></header>
+    <div class="page">
+      <dl class="facts">
+        <dt>Current model</dt><dd id="models-current">not configured</dd>
+        <dt>Provider connection</dt><dd id="models-conn">not tested</dd>
+      </dl>
+      <button class="primary wide" data-action="test-connection" id="test-connection-btn">Test connection</button>
+      <p class="note">The model and endpoint are set with the AI_MODEL and AI_BASE_URL environment variables on Render. A model picker (for providers that support listing models) arrives later.</p>
+    </div>
+  </section>
+
+  <!-- Personality -->
+  <section class="view" data-view="personality">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Personality</strong><span></span></header>
+    <div class="page">
+      <p class="note">Choose any combination. Saved on this device now; applied to replies once the backend is connected (Stage 2).</p>
+      <div class="chips" id="traits" role="group" aria-label="Personality traits"></div>
+      <label class="stack"><span>Custom description</span>
+        <textarea class="field" id="custom-personality" rows="4" maxlength="500" placeholder="e.g. Calm, dry humour, explains things like a good teacher"></textarea>
+      </label>
+      <p class="fine">Personality changes tone only. It never overrides safety or security rules.</p>
+    </div>
+  </section>
+
+  <!-- Voice -->
+  <section class="view" data-view="voice">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Voice</strong><span></span></header>
+    <div class="page">
+      <dl class="facts">
+        <dt>Speech recognition</dt><dd id="voice-stt">checking…</dd>
+        <dt>Speech output</dt><dd id="voice-tts">checking…</dd>
+      </dl>
+      <label class="stack"><span>Speech rate <output id="rate-out">1.0</output></span><input type="range" id="rate" min="0.5" max="2" step="0.1" value="1"></label>
+      <label class="stack"><span>Volume <output id="vol-out">1.0</output></span><input type="range" id="vol" min="0" max="1" step="0.1" value="1"></label>
+      <p class="note">Voice input and spoken replies are built in Stage 4. These sliders are saved now and used then.</p>
+    </div>
+  </section>
+
+  <!-- Settings -->
+  <section class="view" data-view="settings">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Settings</strong><span></span></header>
+    <div class="page">
+      <label class="row"><span>Light theme<small>Dark green is the default.</small></span><input type="checkbox" id="theme-toggle"></label>
+      <label class="row"><span>Reduce motion<small>Calms the orb and transitions.</small></span><input type="checkbox" id="motion-toggle"></label>
+      <a class="link-row" href="#privacy">Privacy and data</a>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section class="view" data-view="privacy">
+    <header class="bar"><button class="icon-btn" data-nav="chat" aria-label="Back">‹</button><strong>Privacy and data</strong><span></span></header>
+    <div class="page prose">
+      <h2>What is stored today</h2>
+      <p>Only your display preferences (theme, personality choices, voice sliders) in this browser. No conversations are stored anywhere yet.</p>
+      <h2>What will change</h2>
+      <p>From Stage 3, conversations and memories are saved on the server so they survive restarts. Each person's data stays separate, and you will be able to delete any item or everything.</p>
+      <h2>API keys</h2>
+      <p>Keys live only in server environment variables. They are never sent to this app.</p>
+      <button class="danger wide" data-action="clear-local">Clear preferences on this device</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

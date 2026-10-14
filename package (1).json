@@ -1,0 +1,12 @@
+{
+  "name": "freedom-ai",
+  "version": "0.1.0",
+  "description": "FREEDOM AI - personal AI assistant (Stage 1: architecture and mobile UI)",
+  "main": "server.js",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}
